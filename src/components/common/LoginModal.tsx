@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Shield, Zap, ArrowRight, Lock, Mail, ChevronLeft } from 'lucide-react';
+import { User, Shield, Zap, ArrowRight, Lock, Mail, ChevronLeft, Dumbbell } from 'lucide-react';
 import { Modal } from './Modal';
 
 interface LoginModalProps {
-  onLogin: (type: 'client' | 'admin', username: string, pass: string) => void;
+  onLogin: (type: 'client' | 'admin' | 'trainer', username: string, pass: string) => void;
   onClose: () => void;
 }
 
 export const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose }) => {
   const [step, setStep] = useState<'select' | 'form'>('select');
-  const [userType, setUserType] = useState<'client' | 'admin' | null>(null);
+  const [userType, setUserType] = useState<'client' | 'admin' | 'trainer' | null>(null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
@@ -22,7 +22,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose }) => {
   };
 
   return (
-    <Modal title={step === 'select' ? "Acceso al Sistema" : (userType === 'admin' ? "Staff Login" : "Socio Login")} onClose={onClose}>
+    <Modal title={step === 'select' ? "Acceso al Sistema" : (userType === 'admin' ? "Staff Login" : userType === 'trainer' ? "Trainer Login" : "Socio Login")} onClose={onClose}>
       <AnimatePresence mode="wait">
         {step === 'select' ? (
           <motion.div 
@@ -49,6 +49,20 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose }) => {
                   <p className="text-[9px] font-bold uppercase tracking-widest opacity-60">Portal de Entrenamiento</p>
                 </div>
                 <ArrowRight size={18} className="opacity-40 group-hover:opacity-100" />
+              </button>
+
+              <button 
+                onClick={() => { setUserType('trainer'); setStep('form'); }}
+                className="w-full p-6 bg-zinc-50 border-2 border-zinc-100 rounded-[2rem] flex items-center gap-5 transition-all active:scale-95 group hover:border-brand/40"
+              >
+                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center border border-zinc-200 group-hover:bg-brand/20 group-hover:text-brand-dark transition-all">
+                  <Dumbbell size={24} />
+                </div>
+                <div className="text-left flex-1 text-zinc-900">
+                  <p className="text-sm font-black uppercase tracking-tight">Soy Entrenador</p>
+                  <p className="text-[9px] font-bold uppercase tracking-widest text-zinc-400">Seguimiento de Clientes</p>
+                </div>
+                <ArrowRight size={18} className="text-zinc-200 group-hover:text-brand" />
               </button>
 
               <button 
@@ -90,7 +104,7 @@ export const LoginModal: React.FC<LoginModalProps> = ({ onLogin, onClose }) => {
                     type="text" 
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    placeholder={userType === 'admin' ? "admin" : "cliente1 / cliente2"} 
+                    placeholder={userType === 'admin' ? "admin" : userType === 'trainer' ? "entrenador" : "cliente1 / cliente2"} 
                     className="w-full pl-12 pr-4 py-4 bg-zinc-50 border border-zinc-200 rounded-2xl outline-none focus:ring-2 focus:ring-brand font-bold text-xs"
                     required
                   />

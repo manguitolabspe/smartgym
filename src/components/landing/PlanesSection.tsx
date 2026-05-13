@@ -24,21 +24,21 @@ export const PlanesSection: React.FC<{ onJoin: () => void }> = ({ onJoin }) => {
   ];
 
   return (
-    <section id="planes" className="py-32 px-6 bg-zinc-50 overflow-hidden">
+    <section id="planes" className="py-12 md:py-32 px-4 md:px-6 bg-zinc-50 overflow-hidden min-h-screen">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-24">
-          <h2 className="font-display text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-none mb-6">Membresías <span className="text-brand">Smart</span></h2>
-          <p className="text-zinc-500 font-black uppercase tracking-[0.4em] text-[10px]">Sin Cláusulas Ocultas • Sin Permanencia</p>
+        <div className="text-center mb-12 md:mb-24">
+          <h2 className="font-display text-4xl md:text-8xl font-black uppercase italic tracking-tighter leading-none mb-4 md:mb-6">Membresías <span className="text-brand">Smart</span></h2>
+          <p className="text-zinc-500 font-black uppercase tracking-[0.2em] md:tracking-[0.4em] text-[8px] md:text-[10px]">Sin Cláusulas Ocultas • Sin Permanencia</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
           {planes.map((plan, i) => (
             <div 
               key={i} 
-              className={`relative bento-card p-10 flex flex-col h-full group transition-all duration-500 ${
+              className={`relative bento-card p-6 md:p-10 flex flex-col h-full group transition-all duration-500 ${
                 plan.accent 
-                  ? 'bg-zinc-950 text-white border-zinc-900 shadow-2xl scale-105 z-10' 
-                  : 'bg-white text-zinc-900 border-zinc-100 hover:scale-[1.02]'
+                  ? 'bg-zinc-950 text-white border-zinc-900 shadow-2xl md:scale-105 z-10' 
+                  : 'bg-white text-zinc-900 border-zinc-100 md:hover:scale-[1.02]'
               }`}
             >
               {plan.accent && (

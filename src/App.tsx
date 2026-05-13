@@ -4,6 +4,7 @@ import { Toast } from './components/common/Toast';
 import { LandingPage } from './views/LandingPage';
 import { CustomerPortal } from './views/CustomerPortal';
 import { AdminDashboard } from './views/AdminDashboard';
+import { TrainerDashboard } from './views/TrainerDashboard';
 import { BioLink } from './views/BioLink';
 import { SystemInfo } from './views/SystemInfo';
 import { MOCK_CLIENTS, MOCK_PAYMENTS, INITIAL_STATS } from './data/mockData';
@@ -13,7 +14,7 @@ import { LoginModal } from './components/common/LoginModal';
 
 const App: React.FC = () => {
   // Navigation State
-  const [view, setView] = useState<'landing' | 'portal' | 'admin' | 'biolink' | 'info'>('landing');
+  const [view, setView] = useState<'landing' | 'portal' | 'admin' | 'trainer' | 'biolink' | 'info'>('landing');
   const [showLoginModal, setShowLoginModal] = useState(false);
   
   // App State
@@ -52,6 +53,7 @@ const App: React.FC = () => {
       if (path === '/biolink') setView('biolink');
       else if (path === '/info') setView('info');
       else if (path === '/admin') setView('admin');
+      else if (path === '/trainer') setView('trainer');
       else if (path === '/portal') setView('portal');
       else setView('landing');
     };
@@ -67,7 +69,7 @@ const App: React.FC = () => {
     window.history.pushState({}, '', path);
   };
 
-  const handleLogin = (type: 'client' | 'admin', user: string, pass: string) => {
+  const handleLogin = (type: 'client' | 'admin' | 'trainer', user: string, pass: string) => {
     // Password universal para el demo
     if (pass !== '123456') {
       setToast("Contraseña incorrecta (Usa 123456 para el demo)");
@@ -80,6 +82,13 @@ const App: React.FC = () => {
         navigate('admin');
       } else {
         setToast("Usuario Staff no válido");
+      }
+    } else if (type === 'trainer') {
+      if (user.toLowerCase() === 'entrenador') {
+        setShowLoginModal(false);
+        navigate('trainer');
+      } else {
+        setToast("Usuario Entrenador no válido");
       }
     } else {
       const foundClient = clients.find(c => c.membershipId.toLowerCase() === user.toLowerCase());
@@ -149,6 +158,17 @@ const App: React.FC = () => {
             onUpdateLoyalty={setLoyaltyConfig}
             onAction={msg => setToast(msg)}
             onAddClient={() => setToast("Función de nuevo socio")}
+          />
+        )}
+
+        {view === 'trainer' && (
+          <TrainerDashboard
+            clients={clients}
+            onLogout={() => navigate('landing')}
+            onUpdateClient={(updatedClient) => {
+              setClients(clients.map(c => c.id === updatedClient.id ? updatedClient : c));
+              setToast('Datos del cliente actualizados');
+            }}
           />
         )}
       </AnimatePresence>

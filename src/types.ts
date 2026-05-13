@@ -1,5 +1,29 @@
 import { LucideIcon } from 'lucide-react';
 
+export interface MeasurementRecord {
+  date: string;
+  weight: number;
+  bodyFat?: number;
+  muscleMass?: number;
+  notes?: string;
+}
+
+export interface RoutineTask {
+  id: string;
+  name: string;
+  sets: number;
+  reps: number;
+  weightRecommended?: number;
+}
+
+export interface TrainingRoutine {
+  id: string;
+  name: string;
+  assignedDate: string;
+  tasks: RoutineTask[];
+  notes?: string;
+}
+
 export interface Client {
   id: string;
   name: string;
@@ -15,6 +39,13 @@ export interface Client {
   weight: number;
   bodyFat?: number;
   muscleMass?: number;
+  measurementsHistory?: MeasurementRecord[];
+  routines?: TrainingRoutine[];
+  trainerNotes?: string;
+  fitnessGoal?: 'Perder Peso' | 'Ganar Músculo' | 'Mantenimiento' | 'Rehabilitación' | 'Rendimiento Deportivo';
+  fitnessLevel?: 'Principiante' | 'Intermedio' | 'Avanzado' | 'Atleta';
+  injuries?: string;
+  programFocus?: string;
 }
 
 export interface Payment {

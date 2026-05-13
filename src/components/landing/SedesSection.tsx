@@ -10,20 +10,20 @@ export const SedesSection: React.FC = () => {
   ];
 
   return (
-    <section id="sedes" className="py-32 px-6 bg-white overflow-hidden">
+    <section id="sedes" className="py-12 md:py-32 px-4 md:px-6 bg-white overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-24">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 md:gap-8 mb-12 md:mb-24">
            <div className="max-w-xl">
-              <h2 className="font-display text-5xl md:text-8xl font-black uppercase italic tracking-tighter leading-none mb-8">Nuestras <br /><span className="text-brand">Sedes</span></h2>
-              <p className="text-xl text-zinc-500 font-medium tracking-wide uppercase">Estamos presentes en las ciudades principales de Perú, con instalaciones de primer nivel.</p>
+              <h2 className="font-display text-4xl md:text-8xl font-black uppercase italic tracking-tighter leading-none mb-4 md:mb-8">Nuestras <br className="hidden md:block"/><span className="text-brand">Sedes</span></h2>
+              <p className="text-sm md:text-xl text-zinc-500 font-medium tracking-wide uppercase">Estamos presentes en las ciudades principales de Perú, con instalaciones de primer nivel.</p>
            </div>
-           <div className="flex gap-4">
-              <div className="flex flex-col items-center p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
-                 <span className="text-3xl font-black italic">15</span>
+           <div className="flex gap-4 w-full md:w-auto">
+              <div className="flex-1 md:flex-none flex flex-col items-center p-4 md:p-6 bg-zinc-50 rounded-3xl border border-zinc-100">
+                 <span className="text-2xl md:text-3xl font-black italic">15</span>
                  <span className="text-[10px] font-black uppercase tracking-widest text-zinc-400">Locales</span>
               </div>
-              <div className="flex flex-col items-center p-6 bg-brand rounded-3xl border border-brand-dark shadow-xl">
-                 <Globe size={24} className="text-black mb-2" />
+              <div className="flex-1 md:flex-none flex flex-col items-center p-4 md:p-6 bg-brand rounded-3xl border border-brand-dark shadow-xl">
+                 <Globe size={24} className="text-black mb-1 md:mb-2" />
                  <span className="text-[10px] font-black uppercase tracking-widest text-black">Nacional</span>
               </div>
            </div>

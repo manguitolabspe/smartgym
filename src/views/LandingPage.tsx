@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { 
-  Dumbbell, Zap, Globe, Target, Users, TrendingUp, Star, ArrowRight, X, ChevronRight, Home, Award, Image as ImageIcon, User
+  Dumbbell, Zap, ArrowRight, X, ChevronRight, Home, Award, User
 } from 'lucide-react';
 import { LandingContent } from '../types';
 import { Hero } from '../components/landing/Hero';
+import { MobileHomeApp } from '../components/landing/MobileHomeApp';
 import { SedesSection } from '../components/landing/SedesSection';
 import { PlanesSection } from '../components/landing/PlanesSection';
 import { ReferralSection } from '../components/landing/ReferralSection';
+import { StatsSection } from '../components/landing/StatsSection';
+import { TestimonialSection } from '../components/landing/TestimonialSection';
+import { SystemSalesCTA } from '../components/landing/SystemSalesCTA';
+import { Footer } from '../components/landing/Footer';
 import { Modal } from '../components/common/Modal';
 import { Toast } from '../components/common/Toast';
 
@@ -18,10 +23,10 @@ interface LandingPageProps {
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ content, onLogin, onViewInfo }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showLeadModal, setShowLeadModal] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [mobileTab, setMobileTab] = useState<'inicio' | 'planes'>('inicio');
 
   const handleLeadSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,13 +35,22 @@ export const LandingPage: React.FC<LandingPageProps> = ({ content, onLogin, onVi
   };
 
   const scrollToSection = (id: string) => {
+    // Si estamos en móvil y el ID es planes, cambia el tab
+    if (window.innerWidth < 768 && id === 'planes') {
+      setMobileTab('planes');
+      window.scrollTo({top: 0});
+      return;
+    }
+    if (window.innerWidth < 768 && id === 'sedes') {
+      setMobileTab('inicio');
+    }
+    
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: 'smooth' });
-    setIsMenuOpen(false);
   };
 
   return (
-    <div className="min-h-screen flex flex-col font-sans scroll-smooth uppercase tracking-normal">
+    <div className="min-h-screen flex flex-col font-sans scroll-smooth uppercase tracking-normal pb-20 md:pb-0">
       <AnimatePresence>
         {toast && <Toast message={toast} onClose={() => setToast(null)} />}
         
@@ -72,7 +86,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ content, onLogin, onVi
 
       {/* Navbar */}
       <nav className="bg-white border-b border-zinc-200 sticky top-0 z-50 px-6 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-2 cursor-pointer" onClick={() => window.scrollTo({top:0, behavior:'smooth'})}>
+        <div className="flex items-center gap-2 cursor-pointer" onClick={() => { window.scrollTo({top:0, behavior:'smooth'}); setMobileTab('inicio'); }}>
           <div className="bg-black p-1.5 rounded-lg">
             <Dumbbell className="text-brand w-6 h-6" />
           </div>
@@ -87,101 +101,47 @@ export const LandingPage: React.FC<LandingPageProps> = ({ content, onLogin, onVi
           <button onClick={() => setShowLeadModal(true)} className="bg-brand text-black px-5 py-2.5 rounded-xl text-[10px] font-black uppercase shadow-lg shadow-brand/10 transition-all active:scale-95 border border-brand-dark">Pase Gratis</button>
           <button onClick={onLogin} className="flex items-center gap-2 bg-zinc-900 text-white px-5 py-2.5 rounded-xl hover:bg-black transition-all text-[10px] font-black uppercase shadow-lg">Iniciar Sesión <ArrowRight size={14} /></button>
         </div>
-
-        <button className="md:hidden p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X /> : <Zap className="text-brand" />}
-        </button>
       </nav>
 
-      {/* Mobile Menu Overlay */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div 
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            className="fixed inset-0 bg-zinc-950 z-[60] flex flex-col p-12 gap-8"
-          >
-             <button onClick={() => setIsMenuOpen(false)} className="self-end p-4 bg-white/10 rounded-2xl"><X className="text-white" /></button>
-             <div className="flex flex-col gap-6 mt-12">
-               {['Sedes', 'Planes', 'Horarios'].map((item) => (
-                 <button key={item} onClick={() => scrollToSection(item.toLowerCase())} className="text-4xl font-display font-black uppercase italic text-white text-left tracking-tighter hover:text-brand transition-colors">{item}</button>
-               ))}
-               <button onClick={() => { setShowLeadModal(true); setIsMenuOpen(false); }} className="mt-8 bg-brand text-black py-6 rounded-3xl font-black uppercase tracking-widest text-xl italic shadow-2xl shadow-brand/20">Obtener Pase Gratis</button>
-               <button onClick={() => { onLogin(); setIsMenuOpen(false); }} className="mt-2 bg-zinc-900 text-white py-6 rounded-3xl font-black uppercase tracking-widest text-xl italic shadow-2xl">Iniciar Sesión</button>
-             </div>
-          </motion.div>
+        {/* INICIO TAB VIEW */}
+        {mobileTab === 'inicio' && (
+          <div className="flex flex-col">
+            {/* Desktop View */}
+            <div className="hidden md:block">
+              <Hero content={content} onJoin={() => setShowJoinModal(true)} onSedes={() => scrollToSection('sedes')} />
+              <StatsSection content={content} />
+              <ReferralSection content={content} />
+              <SedesSection />
+              <TestimonialSection content={content} />
+              <SystemSalesCTA onViewInfo={onViewInfo} />
+            </div>
+            {/* Mobile App View */}
+            <MobileHomeApp gymName={content.gymName} heroImg={content.heroImg} />
+          </div>
         )}
-      </AnimatePresence>
 
-      <Hero content={content} onJoin={() => setShowJoinModal(true)} onSedes={() => scrollToSection('sedes')} />
+      {/* PLANES TAB VIEW */}
+      <div className={`pt-8 md:pt-0 md:block ${mobileTab === 'planes' ? 'block' : 'hidden'}`}>
+        <PlanesSection onJoin={() => setShowJoinModal(true)} />
+      </div>
 
-      {/* Stats Section */}
-      <section id="stats" className="py-32 px-6 max-w-7xl mx-auto w-full">
-        <p className="text-center text-[10px] font-black uppercase tracking-[0.4em] text-zinc-400 mb-16">{content.statsSectionTitle}</p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {[
-            { label: 'Sedes en Perú', value: '15+', icon: <Globe className="text-brand" size={20} /> },
-            { label: 'Máquinas Pro', value: '500+', icon: <Target className="text-brand" size={20} /> },
-            { label: 'Comunidad', value: '10k+', icon: <Users className="text-brand" size={20} /> },
-            { label: 'Resultados', value: '98%', icon: <TrendingUp className="text-brand" size={20} /> },
-          ].map((stat, i) => (
-            <div key={i} className="group p-10 bento-card bg-white hover:bg-zinc-950 hover:text-white transition-all duration-500 flex flex-col items-center text-center">
-              <div className="w-12 h-12 bg-zinc-100 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-brand group-hover:text-black transition-colors duration-500">
-                {stat.icon}
-              </div>
-              <h3 className="font-display text-5xl font-black mb-2 italic tracking-tighter leading-none">{stat.value}</h3>
-              <p className="uppercase text-[10px] font-black tracking-[0.2em] text-zinc-400 group-hover:text-zinc-500">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+      <Footer />
 
-      <ReferralSection content={content} />
-      <PlanesSection onJoin={() => setShowJoinModal(true)} />
-      <SedesSection />
-
-      {/* Testimonials */}
-      <section className="py-32 bg-black text-white overflow-hidden relative">
-         <div className="max-w-4xl mx-auto px-6 text-center">
-            <Star className="text-brand mx-auto mb-12 animate-pulse" size={48} fill="currentColor" />
-            <blockquote className="font-display text-3xl md:text-5xl font-black italic uppercase tracking-tighter mb-12 leading-none">
-              "{content.testimonialText}"
-            </blockquote>
-            <p className="text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 italic">— {content.testimonialAuthor}</p>
-         </div>
-      </section>
-
-      {/* System Sales CTA */}
-      <section className="py-24 bg-brand text-black text-center px-6">
-        <div className="max-w-4xl mx-auto space-y-8">
-           <h2 className="font-display text-4xl md:text-6xl font-black uppercase italic tracking-tighter">¿Buscas un sistema como este para tu gimnasio?</h2>
-           <p className="text-lg font-bold text-black/70 max-w-2xl mx-auto">Descubre cómo Smart Gym OS puede transformar la administración de tu negocio, fidelizar a tus clientes y aumentar tus ingresos.</p>
-           <button 
-             onClick={onViewInfo} 
-             className="bg-black text-white px-8 py-5 rounded-2xl font-black uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-3 mx-auto"
-           >
-             Ver información del Sistema <ArrowRight size={18} />
-           </button>
-        </div>
-      </section>
-
-      {/* Footer / Contact */}
-      <footer id="footer" className="bg-white border-t border-zinc-200 py-32 px-6">
-         <div className="max-w-7xl mx-auto text-center space-y-12">
-            <div className="flex flex-col items-center gap-6">
-              <div className="bg-black p-4 rounded-3xl shadow-xl">
-                 <Dumbbell className="text-brand w-10 h-10" />
-              </div>
-              <h4 className="font-display text-4xl font-black uppercase italic tracking-tighter italic">Entrena con los Mejores</h4>
-            </div>
-            <p className="max-w-2xl mx-auto text-zinc-500 font-medium">Únete a la red de gimnasios premium líder en Perú. Tecnología de vanguardia, los mejores entrenadores y una comunidad que te impulsa.</p>
-            <div className="flex justify-center gap-4">
-               <button className="p-4 bg-zinc-100 rounded-2xl hover:bg-zinc-200 transition-all"><Zap size={20} /></button>
-               <button className="p-4 bg-zinc-100 rounded-2xl hover:bg-zinc-200 transition-all"><Star size={20} /></button>
-            </div>
-         </div>
-      </footer>
+      {/* App-like Bottom Nav for Mobile */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-zinc-200 pb-2 pt-2 px-2 flex justify-around items-center z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.05)]">
+        <button onClick={() => { setMobileTab('inicio'); window.scrollTo({top:0, behavior:'smooth'}); }} className={`flex-1 min-w-0 py-2 flex flex-col items-center gap-1 transition-colors ${mobileTab === 'inicio' ? 'text-brand-dark' : 'text-zinc-400 hover:text-zinc-600'}`}>
+          <div className={`p-1.5 rounded-xl transition-all ${mobileTab === 'inicio' ? 'bg-brand/20' : ''}`}><Home size={22} strokeWidth={mobileTab === 'inicio' ? 2.5 : 2} className={mobileTab === 'inicio' ? 'text-brand-dark' : ''} /></div>
+          <span className="text-[9px] font-black uppercase tracking-widest truncate w-full text-center">Inicio</span>
+        </button>
+        <button onClick={() => { setMobileTab('planes'); window.scrollTo({top:0, behavior:'smooth'}); }} className={`flex-1 min-w-0 py-2 flex flex-col items-center gap-1 transition-colors ${mobileTab === 'planes' ? 'text-brand-dark' : 'text-zinc-400 hover:text-zinc-600'}`}>
+          <div className={`p-1.5 rounded-xl transition-all ${mobileTab === 'planes' ? 'bg-brand/20' : ''}`}><Award size={22} strokeWidth={mobileTab === 'planes' ? 2.5 : 2} className={mobileTab === 'planes' ? 'text-brand-dark' : ''} /></div>
+          <span className="text-[9px] font-black uppercase tracking-widest truncate w-full text-center">Planes</span>
+        </button>
+        <button onClick={onLogin} className="flex-1 min-w-0 py-2 flex flex-col items-center gap-1 transition-colors text-zinc-400 hover:text-zinc-600">
+          <div className="p-1.5 rounded-xl"><User size={22} strokeWidth={2} /></div>
+          <span className="text-[9px] font-black uppercase tracking-widest truncate w-full text-center">Perfil</span>
+        </button>
+      </nav>
     </div>
   );
 };
